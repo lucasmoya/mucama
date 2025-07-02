@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from './AuthProvider';
-import { Loader2 } from 'lucide-react';
+import { Loader2, KeyRound, Eye, EyeOff } from 'lucide-react';
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -26,10 +26,23 @@ const registerSchema = z.object({
 type LoginFormData = z.infer<typeof loginSchema>;
 type RegisterFormData = z.infer<typeof registerSchema>;
 
+// Clave secreta temporal para registro
+const SECRET_KEY = 'amoelBlumen123';
+
 export const SupabaseLoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { signIn, signUp } = useAuth();
+
+  // Estado para el paso de clave secreta
+  const [registerStep, setRegisterStep] = useState<'secret' | 'form'>('secret');
+  const [secretInput, setSecretInput] = useState('');
+  const [secretError, setSecretError] = useState('');
+  const [showSecret, setShowSecret] = useState(false);
+
+  // Estado para mostrar/ocultar contraseña en login y registro
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
+  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
 
   const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
@@ -96,6 +109,17 @@ export const SupabaseLoginForm = () => {
     }
   };
 
+  // Handler para la clave secreta
+  const handleSecretSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (secretInput === SECRET_KEY) {
+      setRegisterStep('form');
+      setSecretError('');
+    } else {
+      setSecretError('Clave secreta incorrecta');
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-pink-50 p-4">
       <Card className="w-full max-w-md">
@@ -128,12 +152,23 @@ export const SupabaseLoginForm = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="login-password">Contraseña</Label>
-                  <Input
-                    id="login-password"
-                    type="password"
-                    placeholder="••••••"
-                    {...loginForm.register('password')}
-                  />
+                  <div className="relative">
+                    <Input
+                      id="login-password"
+                      type={showLoginPassword ? "text" : "password"}
+                      placeholder="••••••"
+                      {...loginForm.register('password')}
+                      className="pr-10"
+                    />
+                    <button
+                      type="button"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      onClick={() => setShowLoginPassword(v => !v)}
+                      tabIndex={-1}
+                    >
+                      {showLoginPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                    </button>
+                  </div>
                   {loginForm.formState.errors.password && (
                     <p className="text-sm text-red-500">
                       {loginForm.formState.errors.password.message}
@@ -149,69 +184,113 @@ export const SupabaseLoginForm = () => {
             </TabsContent>
             
             <TabsContent value="register" className="space-y-4">
-              <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="register-name">Nombre</Label>
-                  <Input
-                    id="register-name"
-                    type="text"
-                    placeholder="Tu nombre"
-                    {...registerForm.register('name')}
-                  />
-                  {registerForm.formState.errors.name && (
-                    <p className="text-sm text-red-500">
-                      {registerForm.formState.errors.name.message}
-                    </p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="register-email">Email</Label>
-                  <Input
-                    id="register-email"
-                    type="email"
-                    placeholder="tu@email.com"
-                    {...registerForm.register('email')}
-                  />
-                  {registerForm.formState.errors.email && (
-                    <p className="text-sm text-red-500">
-                      {registerForm.formState.errors.email.message}
-                    </p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="register-password">Contraseña</Label>
-                  <Input
-                    id="register-password"
-                    type="password"
-                    placeholder="••••••"
-                    {...registerForm.register('password')}
-                  />
-                  {registerForm.formState.errors.password && (
-                    <p className="text-sm text-red-500">
-                      {registerForm.formState.errors.password.message}
-                    </p>
-                  )}
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="register-role">Rol</Label>
-                  <select
-                    id="register-role"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
-                    {...registerForm.register('role')}
-                  >
-                    <option value="mucama">Mucama</option>
-                    <option value="supervisor">Supervisor</option>
-                  </select>
-                </div>
-                
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  Registrarse
-                </Button>
-              </form>
+              {registerStep === 'secret' && (
+                <form onSubmit={handleSecretSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="register-secret">Clave secreta</Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        <KeyRound className="w-5 h-5" />
+                      </span>
+                      <Input
+                        id="register-secret"
+                        type={showSecret ? "text" : "password"}
+                        placeholder="Clave secreta"
+                        value={secretInput}
+                        onChange={e => setSecretInput(e.target.value)}
+                        required
+                        className="pl-10 pr-10"
+                      />
+                      <button
+                        type="button"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        onClick={() => setShowSecret(v => !v)}
+                        tabIndex={-1}
+                      >
+                        {showSecret ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
+                    </div>
+                    {secretError && <p className="text-sm text-red-500">{secretError}</p>}
+                  </div>
+                  <Button type="submit" className="w-full">Continuar</Button>
+                </form>
+              )}
+              {registerStep === 'form' && (
+                <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="register-name">Nombre</Label>
+                    <Input
+                      id="register-name"
+                      type="text"
+                      placeholder="Tu nombre"
+                      {...registerForm.register('name')}
+                    />
+                    {registerForm.formState.errors.name && (
+                      <p className="text-sm text-red-500">
+                        {registerForm.formState.errors.name.message}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="register-email">Email</Label>
+                    <Input
+                      id="register-email"
+                      type="email"
+                      placeholder="tu@email.com"
+                      {...registerForm.register('email')}
+                    />
+                    {registerForm.formState.errors.email && (
+                      <p className="text-sm text-red-500">
+                        {registerForm.formState.errors.email.message}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="register-password">Contraseña</Label>
+                    <div className="relative">
+                      <Input
+                        id="register-password"
+                        type={showRegisterPassword ? "text" : "password"}
+                        placeholder="••••••"
+                        {...registerForm.register('password')}
+                        className="pr-10"
+                      />
+                      <button
+                        type="button"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                        onClick={() => setShowRegisterPassword(v => !v)}
+                        tabIndex={-1}
+                      >
+                        {showRegisterPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
+                    </div>
+                    {registerForm.formState.errors.password && (
+                      <p className="text-sm text-red-500">
+                        {registerForm.formState.errors.password.message}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="register-role">Rol</Label>
+                    <select
+                      id="register-role"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      {...registerForm.register('role')}
+                    >
+                      <option value="mucama">Mucama</option>
+                      <option value="supervisor">Supervisor</option>
+                    </select>
+                  </div>
+                  
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Registrarse
+                  </Button>
+                </form>
+              )}
             </TabsContent>
           </Tabs>
         </CardContent>

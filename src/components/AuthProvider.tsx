@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    await robustLogout('/');
   };
 
   const value = {
@@ -86,4 +86,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
-}; 
+};
+
+// Logout robusto que maneja error 403 y redirige siempre
+export async function robustLogout(redirectTo: string = '/') {
+  try {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      if (error.status === 403) {
+        console.warn('Sesión ya expirada o token inválido. Continuando con logout forzado.');
+      } else {
+        console.error('Error al cerrar sesión:', error);
+      }
+    }
+  } catch (e: any) {
+    console.error('Error inesperado al cerrar sesión:', e);
+  } finally {
+    window.location.href = redirectTo;
+  }
+} 
