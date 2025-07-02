@@ -200,7 +200,7 @@ export const LaundryReception = () => {
               size="lg"
               disabled={loading || updating}
             >
-              {loading ? 'Procesando...' : '📦 Registrar Recepción'}
+              {loading ? 'Procesando...' : 'Registrar Recepción'}
             </Button>
           </CardContent>
         </Card>

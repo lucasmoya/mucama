@@ -121,9 +121,9 @@ export const CatalogItemsModal = ({ isOpen, onClose, items, onUpdateItems }: Cat
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-[90vw] sm:max-w-4xl w-full max-h-[80vh] overflow-y-auto rounded-xl">
         <DialogHeader>
-          <DialogTitle>📋 Gestión del Catálogo de Items</DialogTitle>
+          <DialogTitle>Gestión del Catálogo</DialogTitle>
         </DialogHeader>
 
         <div className="w-full">
@@ -145,8 +145,8 @@ export const CatalogItemsModal = ({ isOpen, onClose, items, onUpdateItems }: Cat
               <TableHeader>
                 <TableRow>
                   <TableHead>Item</TableHead>
-                  <TableHead>Unidad</TableHead>
-                  <TableHead>Stock</TableHead>
+                  <TableHead className="hidden sm:table-cell">Unidad</TableHead>
+                  <TableHead className="hidden sm:table-cell">Stock</TableHead>
                   <TableHead className="w-[100px]">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
@@ -159,8 +159,8 @@ export const CatalogItemsModal = ({ isOpen, onClose, items, onUpdateItems }: Cat
                         <span className="font-medium">{item.name}</span>
                       </div>
                     </TableCell>
-                    <TableCell>{item.unit}</TableCell>
-                    <TableCell>
+                    <TableCell className="hidden sm:table-cell">{item.unit}</TableCell>
+                    <TableCell className="hidden sm:table-cell">
                       <Badge variant="outline">{getStock(item.id)}</Badge>
                     </TableCell>
                     <TableCell>
@@ -195,7 +195,7 @@ export const CatalogItemsModal = ({ isOpen, onClose, items, onUpdateItems }: Cat
           setFormOpen(open);
           if (!open) resetForm();
         }}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-[90vw] sm:max-w-md w-full rounded-xl">
             <DialogHeader>
               <DialogTitle>{isAddingNew ? 'Agregar Nuevo Item' : 'Editar Item'}</DialogTitle>
             </DialogHeader>

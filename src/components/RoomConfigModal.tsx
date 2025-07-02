@@ -141,9 +141,9 @@ export const RoomConfigModal = ({ isOpen, onClose, catalogItems }: RoomConfigMod
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-[90vw] sm:max-w-6xl w-full max-h-[80vh] overflow-y-auto rounded-xl">
         <DialogHeader>
-          <DialogTitle>🏨 Configuración de Habitaciones</DialogTitle>
+          <DialogTitle>Configuración de Habitaciones</DialogTitle>
         </DialogHeader>
 
         <Tabs defaultValue="rooms" className="w-full">
@@ -283,11 +283,11 @@ export const RoomConfigModal = ({ isOpen, onClose, catalogItems }: RoomConfigMod
                         <Home className="h-5 w-5" />
                         {room.name}
                         <Badge variant="outline">{room.type}</Badge>
-                        <span className="ml-2 text-gray-500 text-sm">Capacidad: {room.capacity}</span>
+                        <span className="ml-2 text-gray-500 text-sm hidden sm:inline">Capacidad: {room.capacity}</span>
                       </CardTitle>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-gray-500">{linenSummary.length} tipos de ropa</span>
+                      <span className="text-xs text-gray-500 hidden sm:inline">{linenSummary.length} tipos de ropa</span>
                       <Button
                         variant="ghost"
                         size="icon"
@@ -317,7 +317,7 @@ export const RoomConfigModal = ({ isOpen, onClose, catalogItems }: RoomConfigMod
                     {isExpanded && (
                       <div className="mt-4 border-t pt-4">
                         <div className="font-semibold mb-2">Editar Asignación de Ropa</div>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                           {catalogItems.map((item) => {
                             const currentQuantity = getLinenQuantity(room.id, item.id);
                             return (

@@ -79,7 +79,7 @@ export const StockInitialModal = ({ isOpen, onClose, catalogItems, onUpdateStock
 
   return (
     <Dialog open={isOpen} onOpenChange={() => { if (!saving) onClose(); }}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-[90vw] sm:max-w-4xl w-full max-h-[80vh] overflow-y-auto rounded-xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Package className="h-5 w-5" />

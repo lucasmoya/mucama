@@ -137,7 +137,9 @@ export const ExtraDelivery = () => {
         <DialogContent className="max-w-[90vw] sm:max-w-4xl w-full max-h-[80vh] overflow-y-auto rounded-xl">
           <DialogHeader>
             <DialogTitle>
-              ➕ Entrega Extra - Habitación {selectedRoom}
+              <span className="font-bold">Entrega Extra</span>
+              <span className="mx-2 text-gray-400">·</span>
+              <span className="font-normal text-gray-700">{selectedRoomData ? selectedRoomData.name : selectedRoom}</span>
             </DialogTitle>
             <DialogDescription>
               {selectedRoomData?.type} • Selecciona los artículos y cantidades a entregar
