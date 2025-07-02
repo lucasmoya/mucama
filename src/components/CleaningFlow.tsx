@@ -115,7 +115,7 @@ export const CleaningFlow = () => {
         })}
       </div>
       <Dialog open={confirmOpen} onOpenChange={open => { if (!open) setConfirmOpen(false); }}>
-        <DialogContent>
+        <DialogContent className="max-w-[90vw] sm:max-w-md w-full rounded-xl">
           <DialogHeader>
             <DialogTitle>¿Confirmar limpieza?</DialogTitle>
           </DialogHeader>

@@ -134,7 +134,7 @@ export const ExtraDelivery = () => {
 
       {/* Modal para selección de artículos */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-[90vw] sm:max-w-4xl w-full max-h-[90vh] overflow-y-auto rounded-xl">
           <DialogHeader>
             <DialogTitle>
               ➕ Entrega Extra - Habitación {selectedRoom}
