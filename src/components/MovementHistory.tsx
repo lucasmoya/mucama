@@ -287,7 +287,7 @@ export const MovementHistory = ({ userRole }: MovementHistoryProps) => {
                                ev.type === 'extra' && ev.room ? `Entrega extra Habitación ${ev.room.name}` :
                                getTypeLabel(ev.type)}
                             </h4>
-                          <div className="flex items-center space-x-4 mt-2">
+                          <div className="flex items-center space-x-4 mt-2 -ml-8 sm:ml-0">
                               <span className="text-xs text-gray-500 flex items-center gap-1">
                                 <User className="w-4 h-4 inline" /> {ev.user}
                             </span>
@@ -301,7 +301,7 @@ export const MovementHistory = ({ userRole }: MovementHistoryProps) => {
                             </span>
                             </div>
                           </div>
-                          <Badge className={getTypeColor(ev.type)}>
+                          <Badge className={getTypeColor(ev.type) + ' hidden sm:inline-flex'}>
                             {getTypeLabel(ev.type)}
                           </Badge>
                         </div>
